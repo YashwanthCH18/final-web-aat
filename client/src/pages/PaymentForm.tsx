@@ -17,13 +17,56 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
+// Luhn algorithm for credit card validation
+function isValidCreditCard(number: string) {
+  let sum = 0;
+  let isEven = false;
+
+  // Loop through values starting from the rightmost digit
+  for (let i = number.length - 1; i >= 0; i--) {
+    let digit = parseInt(number.charAt(i));
+
+    if (isEven) {
+      digit *= 2;
+      if (digit > 9) {
+        digit -= 9;
+      }
+    }
+
+    sum += digit;
+    isEven = !isEven;
+  }
+
+  return sum % 10 === 0;
+}
+
 const paymentFormSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
-  phone: z.string().min(10, "Phone number must be at least 10 digits"),
-  cardNumber: z.string().regex(/^\d{16}$/, "Card number must be 16 digits"),
-  expiryDate: z.string().regex(/^\d{2}\/\d{2}$/, "Expiry date must be in MM/YY format"),
-  cvv: z.string().regex(/^\d{3,4}$/, "CVV must be 3 or 4 digits")
+  name: z.string()
+    .min(2, "Name must be at least 2 characters")
+    .max(50, "Name must be less than 50 characters")
+    .regex(/^[a-zA-Z\s]*$/, "Name can only contain letters and spaces"),
+  email: z.string()
+    .email("Invalid email address")
+    .min(5, "Email must be at least 5 characters")
+    .max(100, "Email must be less than 100 characters"),
+  phone: z.string()
+    .regex(/^\+?[1-9]\d{1,14}$/, "Please enter a valid phone number")
+    .min(10, "Phone number must be at least 10 digits")
+    .max(15, "Phone number must be less than 15 digits"),
+  cardNumber: z.string()
+    .regex(/^\d{16}$/, "Card number must be 16 digits")
+    .refine((val) => isValidCreditCard(val), {
+      message: "Invalid credit card number"
+    }),
+  expiryDate: z.string()
+    .regex(/^(0[1-9]|1[0-2])\/([0-9]{2})$/, "Expiry date must be in MM/YY format")
+    .refine((val) => {
+      const [month, year] = val.split('/');
+      const expiry = new Date(2000 + parseInt(year), parseInt(month) - 1);
+      return expiry > new Date();
+    }, "Card has expired"),
+  cvv: z.string()
+    .regex(/^\d{3,4}$/, "CVV must be 3 or 4 digits")
 });
 
 export default function PaymentForm() {
@@ -93,7 +136,11 @@ export default function PaymentForm() {
                       <FormItem>
                         <FormLabel>Full Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="John Doe" {...field} />
+                          <Input 
+                            placeholder="John Doe" 
+                            {...field}
+                            maxLength={50}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -107,7 +154,12 @@ export default function PaymentForm() {
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input type="email" placeholder="john@example.com" {...field} />
+                          <Input 
+                            type="email" 
+                            placeholder="john@example.com" 
+                            {...field}
+                            maxLength={100}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -121,7 +173,11 @@ export default function PaymentForm() {
                       <FormItem>
                         <FormLabel>Phone Number</FormLabel>
                         <FormControl>
-                          <Input placeholder="1234567890" {...field} />
+                          <Input 
+                            placeholder="+1234567890"
+                            {...field}
+                            maxLength={15}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -138,7 +194,11 @@ export default function PaymentForm() {
                           <Input 
                             placeholder="1234567890123456" 
                             maxLength={16}
-                            {...field} 
+                            {...field}
+                            onChange={(e) => {
+                              const value = e.target.value.replace(/\D/g, '');
+                              field.onChange(value);
+                            }}
                           />
                         </FormControl>
                         <FormMessage />
@@ -157,7 +217,14 @@ export default function PaymentForm() {
                             <Input 
                               placeholder="MM/YY" 
                               maxLength={5}
-                              {...field} 
+                              {...field}
+                              onChange={(e) => {
+                                let value = e.target.value.replace(/\D/g, '');
+                                if (value.length >= 2) {
+                                  value = value.slice(0, 2) + '/' + value.slice(2);
+                                }
+                                field.onChange(value);
+                              }}
                             />
                           </FormControl>
                           <FormMessage />
@@ -176,7 +243,11 @@ export default function PaymentForm() {
                               type="password" 
                               placeholder="123" 
                               maxLength={4}
-                              {...field} 
+                              {...field}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/\D/g, '');
+                                field.onChange(value);
+                              }}
                             />
                           </FormControl>
                           <FormMessage />
