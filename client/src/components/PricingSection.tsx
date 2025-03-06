@@ -6,6 +6,7 @@ import { Link } from "wouter";
 
 const plans = [
   {
+    id: "starter",
     name: "Starter",
     price: "29",
     features: [
@@ -16,6 +17,7 @@ const plans = [
     ]
   },
   {
+    id: "professional",
     name: "Professional",
     price: "79",
     features: [
@@ -27,6 +29,7 @@ const plans = [
     ]
   },
   {
+    id: "enterprise",
     name: "Enterprise",
     price: "199",
     features: [
@@ -62,7 +65,7 @@ export default function PricingSection() {
         <div className="grid md:grid-cols-3 gap-8">
           {plans.map((plan, index) => (
             <motion.div
-              key={index}
+              key={plan.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
@@ -87,7 +90,7 @@ export default function PricingSection() {
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  <Link href="/payment">
+                  <Link href={`/payment?plan=${plan.id}`}>
                     <Button className="w-full">Buy Now</Button>
                   </Link>
                 </CardFooter>

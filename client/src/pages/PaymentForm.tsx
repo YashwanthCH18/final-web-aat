@@ -16,6 +16,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useLocation } from "wouter";
 
 // Luhn algorithm for credit card validation
 function isValidCreditCard(number: string) {
@@ -40,7 +48,46 @@ function isValidCreditCard(number: string) {
   return sum % 10 === 0;
 }
 
+const plans = {
+  starter: {
+    name: "Starter",
+    price: "29",
+    features: [
+      "5 AI-generated blog posts per month",
+      "Basic SEO optimization",
+      "Standard support",
+      "1 user account"
+    ]
+  },
+  professional: {
+    name: "Professional",
+    price: "79",
+    features: [
+      "20 AI-generated blog posts per month",
+      "Advanced SEO optimization",
+      "Priority support",
+      "3 user accounts",
+      "Content calendar"
+    ]
+  },
+  enterprise: {
+    name: "Enterprise",
+    price: "199",
+    features: [
+      "Unlimited AI-generated blog posts",
+      "Premium SEO optimization",
+      "24/7 dedicated support",
+      "Unlimited user accounts",
+      "Custom integrations",
+      "Analytics dashboard"
+    ]
+  }
+};
+
 const paymentFormSchema = z.object({
+  plan: z.enum(["starter", "professional", "enterprise"] as const, {
+    required_error: "Please select a plan",
+  }),
   name: z.string()
     .min(2, "Name must be at least 2 characters")
     .max(50, "Name must be less than 50 characters")
@@ -71,9 +118,16 @@ const paymentFormSchema = z.object({
 
 export default function PaymentForm() {
   const { toast } = useToast();
+  const [location] = useLocation();
+
+  // Get the plan from URL search params if it exists
+  const searchParams = new URLSearchParams(window.location.search);
+  const selectedPlan = searchParams.get('plan') as "starter" | "professional" | "enterprise" | null;
+
   const form = useForm({
     resolver: zodResolver(paymentFormSchema),
     defaultValues: {
+      plan: selectedPlan || "starter",
       name: "",
       email: "",
       phone: "",
@@ -91,6 +145,9 @@ export default function PaymentForm() {
         name: data.name,
         email: data.email,
         phone: data.phone,
+        plan: data.plan,
+        planDetails: plans[data.plan],
+        amount: parseInt(plans[data.plan].price),
         createdAt: new Date(),
         // Do not store actual card details in production!
         lastFourDigits: data.cardNumber.slice(-4)
@@ -129,6 +186,34 @@ export default function PaymentForm() {
             <CardContent>
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  <FormField
+                    control={form.control}
+                    name="plan"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Select Plan</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a plan" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {Object.entries(plans).map(([key, plan]) => (
+                              <SelectItem key={key} value={key}>
+                                {plan.name} - ${plan.price}/month
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
                   <FormField
                     control={form.control}
                     name="name"
