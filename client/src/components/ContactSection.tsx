@@ -3,8 +3,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { insertContactSchema } from "@shared/schema";
-import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { db, contactsCollection } from "@/lib/firebase";
+import { collection, addDoc } from "firebase/firestore";
 import {
   Form,
   FormControl,
@@ -30,7 +31,25 @@ export default function ContactSection() {
 
   const mutation = useMutation({
     mutationFn: async (data: any) => {
-      return apiRequest("POST", "/api/contact", data);
+      try {
+        // Store in Firebase
+        await addDoc(collection(db, contactsCollection), {
+          ...data,
+          createdAt: new Date()
+        });
+
+        // Also send to backend API
+        await fetch("/api/contact", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+      } catch (error) {
+        console.error("Error submitting contact form:", error);
+        throw error;
+      }
     },
     onSuccess: () => {
       toast({

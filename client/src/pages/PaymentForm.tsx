@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
+import { db, paymentsCollection } from "@/lib/firebase";
+import { collection, addDoc } from "firebase/firestore";
 import {
   Form,
   FormControl,
@@ -40,14 +42,26 @@ export default function PaymentForm() {
 
   const onSubmit = async (data: z.infer<typeof paymentFormSchema>) => {
     try {
-      // This would typically integrate with a payment processor
-      // For now we'll just show a success message
+      // In a real application, you would process the payment through a payment gateway
+      // For demo purposes, we'll just store the payment info (excluding sensitive data)
+      const paymentInfo = {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        createdAt: new Date(),
+        // Do not store actual card details in production!
+        lastFourDigits: data.cardNumber.slice(-4)
+      };
+
+      await addDoc(collection(db, paymentsCollection), paymentInfo);
+
       toast({
         title: "Payment successful!",
         description: "Thank you for your purchase.",
       });
       form.reset();
     } catch (error) {
+      console.error("Payment error:", error);
       toast({
         title: "Payment failed",
         description: "Please try again or contact support.",
@@ -121,7 +135,11 @@ export default function PaymentForm() {
                       <FormItem>
                         <FormLabel>Card Number</FormLabel>
                         <FormControl>
-                          <Input placeholder="1234567890123456" {...field} />
+                          <Input 
+                            placeholder="1234567890123456" 
+                            maxLength={16}
+                            {...field} 
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -136,7 +154,11 @@ export default function PaymentForm() {
                         <FormItem>
                           <FormLabel>Expiry Date</FormLabel>
                           <FormControl>
-                            <Input placeholder="MM/YY" {...field} />
+                            <Input 
+                              placeholder="MM/YY" 
+                              maxLength={5}
+                              {...field} 
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -150,7 +172,12 @@ export default function PaymentForm() {
                         <FormItem>
                           <FormLabel>CVV</FormLabel>
                           <FormControl>
-                            <Input type="password" placeholder="123" {...field} />
+                            <Input 
+                              type="password" 
+                              placeholder="123" 
+                              maxLength={4}
+                              {...field} 
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
