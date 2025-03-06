@@ -6,6 +6,11 @@ export default function Navbar() {
   const [location] = useLocation();
   const isHomePage = location === "/";
 
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    element?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   const navItems = [
     { id: 'about', label: 'About Us', path: '/#about' },
     { id: 'pricing', label: 'Pricing', path: '/#pricing' },
@@ -40,19 +45,32 @@ export default function Navbar() {
                     <span>{item.label}</span>
                   </Link>
                 ) : (
-                  <Link href={item.path}>
-                    <span>{item.label}</span>
-                  </Link>
+                  isHomePage ? (
+                    <span onClick={() => scrollToSection(item.id)}>{item.label}</span>
+                  ) : (
+                    <Link href={item.path}>
+                      <span>{item.label}</span>
+                    </Link>
+                  )
                 )}
               </span>
             ))}
           </div>
 
-          <Link href="/#pricing">
-            <span className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors cursor-pointer">
+          {isHomePage ? (
+            <span
+              onClick={() => scrollToSection('pricing')}
+              className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors cursor-pointer"
+            >
               Get Started
             </span>
-          </Link>
+          ) : (
+            <Link href="/#pricing">
+              <span className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors cursor-pointer">
+                Get Started
+              </span>
+            </Link>
+          )}
         </div>
       </div>
     </motion.nav>
