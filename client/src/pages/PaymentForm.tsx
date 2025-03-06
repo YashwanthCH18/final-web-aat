@@ -5,6 +5,7 @@ import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { db, paymentsCollection } from "@/lib/firebase";
 import { collection, addDoc } from "firebase/firestore";
+import { useLocation, useLocation as useLocationHook } from "wouter";
 import {
   Form,
   FormControl,
@@ -23,7 +24,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useLocation } from "wouter";
 
 // Luhn algorithm for credit card validation
 function isValidCreditCard(number: string) {
@@ -126,7 +126,7 @@ const paymentFormSchema = z.object({
 
 export default function PaymentForm() {
   const { toast } = useToast();
-  const [location] = useLocation();
+  const [location, setLocation] = useLocationHook();
 
   // Get the plan from URL search params if it exists
   const searchParams = new URLSearchParams(window.location.search);
@@ -165,9 +165,15 @@ export default function PaymentForm() {
 
       toast({
         title: "Payment successful!",
-        description: "Thank you for your purchase.",
+        description: "Thank you for your purchase. Redirecting to home page...",
       });
+
+      // Reset form and redirect to home page after a short delay
       form.reset();
+      setTimeout(() => {
+        setLocation('/');
+      }, 2000);
+
     } catch (error) {
       console.error("Payment error:", error);
       toast({
