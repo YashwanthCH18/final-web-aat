@@ -27,12 +27,19 @@ import { useLocation } from "wouter";
 
 // Luhn algorithm for credit card validation
 function isValidCreditCard(number: string) {
+  // Remove all non-digit characters
+  const cleanNumber = number.replace(/\D/g, '');
+
+  if (cleanNumber.length < 13 || cleanNumber.length > 19) {
+    return false;
+  }
+
   let sum = 0;
   let isEven = false;
 
   // Loop through values starting from the rightmost digit
-  for (let i = number.length - 1; i >= 0; i--) {
-    let digit = parseInt(number.charAt(i));
+  for (let i = cleanNumber.length - 1; i >= 0; i--) {
+    let digit = parseInt(cleanNumber.charAt(i));
 
     if (isEven) {
       digit *= 2;
@@ -101,7 +108,8 @@ const paymentFormSchema = z.object({
     .min(10, "Phone number must be at least 10 digits")
     .max(15, "Phone number must be less than 15 digits"),
   cardNumber: z.string()
-    .regex(/^\d{16}$/, "Card number must be 16 digits")
+    .min(13, "Card number must be at least 13 digits")
+    .max(23, "Card number is too long") // 19 digits + possible spaces/dashes
     .refine((val) => isValidCreditCard(val), {
       message: "Invalid credit card number"
     }),
@@ -150,7 +158,7 @@ export default function PaymentForm() {
         amount: parseInt(plans[data.plan].price),
         createdAt: new Date(),
         // Do not store actual card details in production!
-        lastFourDigits: data.cardNumber.slice(-4)
+        lastFourDigits: data.cardNumber.replace(/\D/g, '').slice(-4)
       };
 
       await addDoc(collection(db, paymentsCollection), paymentInfo);
@@ -277,11 +285,14 @@ export default function PaymentForm() {
                         <FormLabel>Card Number</FormLabel>
                         <FormControl>
                           <Input 
-                            placeholder="1234567890123456" 
-                            maxLength={16}
+                            placeholder="1234 5678 9012 3456" 
+                            maxLength={23}
                             {...field}
                             onChange={(e) => {
-                              const value = e.target.value.replace(/\D/g, '');
+                              // Allow numbers, spaces, and dashes
+                              let value = e.target.value.replace(/[^\d\s-]/g, '');
+                              // Format the card number with spaces every 4 digits
+                              value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
                               field.onChange(value);
                             }}
                           />
