@@ -1,0 +1,65 @@
+Task 1: Build the Main Landing Page with Integrated Content and Contact Form
+Description:
+Develop a modern, fully responsive landing page that highlights your AI SaaS product (an automatic blog generator and uploader) and provides key information to the user. This page should include:
+
+Hero Section:
+
+A bold headline emphasizing the AI-driven benefits.
+A strong CTA button labeled “Get Started” that, when clicked, scrolls down smoothly to the Pricing section.
+Fixed-Top Animated Navbar:
+
+Include the following items: About Us, Pricing, Blog, Contact Us, and Get Started.
+Ensure smooth scrolling for in-page sections (About Us, Pricing, Contact Us) and proper navigation for the Blog section.
+Content Sections:
+
+About Us: A multi-column layout describing the company’s vision and the benefits of the AI system.
+Pricing: Responsive cards showcasing various subscription tiers with hover effects and animations. Each plan should have a “Buy Now” button that links to the Payment Form Page (Task 2).
+Contact Us: A contact form that stores submitted messages in Firebase (include a code placeholder such as /* Firebase code to store contact message goes here */).
+Default Blog Previews: A section with hard-coded blog previews that include titles, short snippets, and “Read More” buttons linking to the blog section (Task 3).
+Design & Animations:
+
+Use the white-and-purple color scheme with background colors #dfdefd or #aba7fd.
+Incorporate smooth fade-ins, hover transitions, and micro-interactions to create a premium, dynamic feel.
+Ensure every element is fully visible on page load using proper Bootstrap containers, rows, and columns.
+Task 2: Build the Payment Form Page for Purchasing a Plan
+Description:
+Develop a Payment Form Page that users access when they click “Buy Now” on a pricing plan. This page should:
+
+Payment Form:
+
+Present a form to collect standard user details such as Name, Email, Phone Number, and Payment Information (e.g., credit card details).
+Implement form validation to ensure that all fields are correctly filled out (e.g., required fields, proper email format).
+Submission and Feedback:
+
+When the form is submitted, display a “Payment done successfully” message.
+Store the submitted details in your database (include a comment placeholder such as /* Firebase code to store payment details goes here */).
+Design & Consistency:
+
+Maintain the same white-and-purple theme and animated style as the landing page.
+Use responsive Bootstrap layout components to ensure the form is fully visible on all devices.
+Incorporate smooth animations for form transitions and button hover effects.
+Task 3: Build the Public Blog Flow
+Description:
+Develop the entire blog section of the website, ensuring that all users can view blogs without needing to log in. This flow should include:
+
+Blog Sector Selection Page:
+
+Create a page with four animated tiles, each representing a blog sector: Edtech, Fintech, SAAS, and Social Media.
+Each tile should have a distinct color (complementing the overall theme) with hover effects (e.g., scale-up, shadow).
+Include an engaging header (e.g., “Explore Blogs by Sector”) that fades or slides into view.
+Clicking on a tile should navigate the user to the corresponding Sector-Specific Blog Main Page.
+Sector-Specific Blog Main Page:
+
+Display a dynamic header reflecting the selected sector (for example, “Fintech Blogs”).
+Arrange multiple blog preview cards in a grid layout, each card featuring a title, snippet, and a “Read More” button.
+Incorporate hover animations (scaling, shadows) and scroll-triggered fade-ins.
+Include hard-coded example blogs so that content is available by default.
+Dedicated Blog Post Page:
+
+Create a detailed page for displaying the full content of an individual blog post.
+Include a prominent title, publication date, author details, and complete blog content with images/media that animate into view.
+Provide a “Back to Blogs” button or breadcrumb navigation to return to the Sector-Specific Blog Main Page.
+Navigation Consistency:
+
+The fixed-top animated navbar should be present on all blog pages, with the Blog menu item directing back to the Blog Sector Selection Page.
+Ensure that the design, color scheme, and animations are consistent with the rest of the website.
