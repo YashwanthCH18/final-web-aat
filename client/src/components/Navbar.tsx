@@ -5,11 +5,16 @@ import { cn } from "@/lib/utils";
 export default function Navbar() {
   const [location] = useLocation();
 
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    element?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   const navItems = [
-    { href: "/#about", label: "About Us" },
-    { href: "/#pricing", label: "Pricing" },
-    { href: "/blog", label: "Blog" },
-    { href: "/#contact", label: "Contact Us" }
+    { id: 'about', label: 'About Us' },
+    { id: 'pricing', label: 'Pricing' },
+    { href: '/blog', label: 'Blog' },
+    { id: 'contact', label: 'Contact Us' }
   ];
 
   return (
@@ -22,30 +27,36 @@ export default function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link href="/">
-            <a className="text-2xl font-bold text-primary">BlogGen AI</a>
+            <span className="text-2xl font-bold text-primary cursor-pointer">BlogGen AI</span>
           </Link>
 
           <div className="hidden md:flex space-x-8">
             {navItems.map((item) => (
-              <Link 
-                key={item.href} 
-                href={item.href}
+              <span
+                key={item.id || item.href}
+                onClick={() => item.id ? scrollToSection(item.id) : null}
+                className={cn(
+                  "text-sm font-medium transition-colors hover:text-primary cursor-pointer",
+                  location === (item.href || `/#${item.id}`) ? "text-primary" : "text-gray-600"
+                )}
               >
-                <a className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary",
-                  location === item.href ? "text-primary" : "text-gray-600"
-                )}>
-                  {item.label}
-                </a>
-              </Link>
+                {item.href ? (
+                  <Link href={item.href}>
+                    <span>{item.label}</span>
+                  </Link>
+                ) : (
+                  item.label
+                )}
+              </span>
             ))}
           </div>
 
-          <Link href="/#pricing">
-            <a className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors">
-              Get Started
-            </a>
-          </Link>
+          <span
+            onClick={() => scrollToSection('pricing')}
+            className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors cursor-pointer"
+          >
+            Get Started
+          </span>
         </div>
       </div>
     </motion.nav>
