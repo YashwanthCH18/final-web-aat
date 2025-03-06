@@ -4,17 +4,23 @@ import { cn } from "@/lib/utils";
 
 export default function Navbar() {
   const [location] = useLocation();
+  const isHomePage = location === "/";
 
   const scrollToSection = (sectionId: string) => {
+    if (!isHomePage) {
+      // If not on home page, navigate to home page first
+      window.location.href = `/#${sectionId}`;
+      return;
+    }
     const element = document.getElementById(sectionId);
     element?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const navItems = [
-    { id: 'about', label: 'About Us' },
-    { id: 'pricing', label: 'Pricing' },
+    { id: 'about', label: 'About Us', path: '/#about' },
+    { id: 'pricing', label: 'Pricing', path: '/#pricing' },
     { href: '/blog', label: 'Blog' },
-    { id: 'contact', label: 'Contact Us' }
+    { id: 'contact', label: 'Contact Us', path: '/#contact' }
   ];
 
   return (
@@ -37,7 +43,7 @@ export default function Navbar() {
                 onClick={() => item.id ? scrollToSection(item.id) : null}
                 className={cn(
                   "text-sm font-medium transition-colors hover:text-primary cursor-pointer",
-                  location === (item.href || `/#${item.id}`) ? "text-primary" : "text-gray-600"
+                  (location === (item.href || item.path)) ? "text-primary" : "text-gray-600"
                 )}
               >
                 {item.href ? (
@@ -51,12 +57,20 @@ export default function Navbar() {
             ))}
           </div>
 
-          <span
-            onClick={() => scrollToSection('pricing')}
-            className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors cursor-pointer"
-          >
-            Get Started
-          </span>
+          {isHomePage ? (
+            <span
+              onClick={() => scrollToSection('pricing')}
+              className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors cursor-pointer"
+            >
+              Get Started
+            </span>
+          ) : (
+            <Link href="/#pricing">
+              <span className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors cursor-pointer">
+                Get Started
+              </span>
+            </Link>
+          )}
         </div>
       </div>
     </motion.nav>
