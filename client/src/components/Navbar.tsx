@@ -6,16 +6,6 @@ export default function Navbar() {
   const [location] = useLocation();
   const isHomePage = location === "/";
 
-  const scrollToSection = (sectionId: string) => {
-    if (!isHomePage) {
-      // If not on home page, navigate to home page first
-      window.location.href = `/#${sectionId}`;
-      return;
-    }
-    const element = document.getElementById(sectionId);
-    element?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   const navItems = [
     { id: 'about', label: 'About Us', path: '/#about' },
     { id: 'pricing', label: 'Pricing', path: '/#pricing' },
@@ -40,7 +30,6 @@ export default function Navbar() {
             {navItems.map((item) => (
               <span
                 key={item.id || item.href}
-                onClick={() => item.id ? scrollToSection(item.id) : null}
                 className={cn(
                   "text-sm font-medium transition-colors hover:text-primary cursor-pointer",
                   (location === (item.href || item.path)) ? "text-primary" : "text-gray-600"
@@ -51,26 +40,19 @@ export default function Navbar() {
                     <span>{item.label}</span>
                   </Link>
                 ) : (
-                  item.label
+                  <Link href={item.path}>
+                    <span>{item.label}</span>
+                  </Link>
                 )}
               </span>
             ))}
           </div>
 
-          {isHomePage ? (
-            <span
-              onClick={() => scrollToSection('pricing')}
-              className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors cursor-pointer"
-            >
+          <Link href="/#pricing">
+            <span className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors cursor-pointer">
               Get Started
             </span>
-          ) : (
-            <Link href="/#pricing">
-              <span className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors cursor-pointer">
-                Get Started
-              </span>
-            </Link>
-          )}
+          </Link>
         </div>
       </div>
     </motion.nav>
