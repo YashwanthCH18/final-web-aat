@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { Link } from "wouter";
 
 export default function HeroSection() {
   const scrollToPricing = () => {
@@ -8,6 +9,7 @@ export default function HeroSection() {
   };
 
   return (
+    <section id="home" className="py-20 bg-white">
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#dfdefd] to-white">
       <div className="container mx-auto px-4 py-32">
         <motion.div
@@ -36,5 +38,6 @@ export default function HeroSection() {
         </motion.div>
       </div>
     </div>
+    </section>
   );
 }
