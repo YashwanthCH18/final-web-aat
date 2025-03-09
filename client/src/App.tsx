@@ -9,20 +9,24 @@ import BlogSectors from "@/pages/BlogSectors";
 import BlogList from "@/pages/BlogList";
 import BlogPost from "@/pages/BlogPost";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 function Router() {
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <Navbar />
-      <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/payment" component={PaymentForm} />
-        <Route path="/blog" component={BlogSectors} />
-        <Route path="/blog/:sector" component={BlogList} />
-        <Route path="/blog/post/:id" component={BlogPost} />
-        <Route component={NotFound} />
-      </Switch>
-    </>
+      <main className="flex-grow">
+        <Switch>
+          <Route path="/" component={Home} />
+          <Route path="/payment" component={PaymentForm} />
+          <Route path="/blog" component={BlogSectors} />
+          <Route path="/blog/:sector" component={BlogList} />
+          <Route path="/blog/post/:id" component={BlogPost} />
+          <Route component={NotFound} />
+        </Switch>
+      </main>
+      <Footer />
+    </div>
   );
 }
 
