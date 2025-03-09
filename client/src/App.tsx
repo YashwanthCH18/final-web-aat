@@ -9,7 +9,6 @@ import BlogSectors from "@/pages/BlogSectors";
 import BlogList from "@/pages/BlogList";
 import BlogPost from "@/pages/BlogPost";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 
 function Router() {
   return (
@@ -25,7 +24,6 @@ function Router() {
           <Route component={NotFound} />
         </Switch>
       </main>
-      <Footer />
     </div>
   );
 }
