@@ -47,12 +47,9 @@ export async function generateBlogContent(sector: string): Promise<{
     10. Make the content unique and specific to ${sector} with real examples and trends.
     11. Include specific statistics, numbers, or data points where relevant.
     12. Use professional industry terminology and jargon appropriately.
-<<<<<<< HEAD
     13. IMPORTANT: Format paragraphs with double line breaks (\\n\\n) between them for proper spacing.
     14. Each paragraph should be 3-5 sentences long for optimal readability.
     15. Use single line breaks (\\n) for lists and subsections.
-=======
->>>>>>> d9d3e8fb9067f23cfe8d92d0dee4cf661f91b486
     
     SUGGESTED STRUCTURE (adapt based on ${sector}):
     - Introduction (Overview of the topic and its importance in ${sector})
@@ -66,11 +63,7 @@ export async function generateBlogContent(sector: string): Promise<{
     Format your response as clean JSON with the following structure:
     {
       "title": "Your Unique Blog Title",
-<<<<<<< HEAD
       "content": "The full content with proper spacing and structure. Use double line breaks (\\n\\n) between paragraphs and single line breaks (\\n) for lists and subsections.",
-=======
-      "content": "The full content with proper spacing and structure. Use double line breaks between sections and single line breaks between paragraphs. Each section should be detailed and well-developed.",
->>>>>>> d9d3e8fb9067f23cfe8d92d0dee4cf661f91b486
       "snippet": "A compelling 2-3 sentence summary of the blog's main value proposition",
       "author": "Author Name, Professional Title"
     }
@@ -83,12 +76,8 @@ export async function generateBlogContent(sector: string): Promise<{
     - Use industry-specific terminology
     - Provide actionable insights
     - Keep the tone professional but engaging
-<<<<<<< HEAD
     - Ensure each section is well-developed with at least 100 words
     - Use proper paragraph spacing with double line breaks`;
-=======
-    - Ensure each section is well-developed with at least 100 words`;
->>>>>>> d9d3e8fb9067f23cfe8d92d0dee4cf661f91b486
 
     // Generate content
     const result = await model.generateContent(prompt);
@@ -120,10 +109,6 @@ export async function generateBlogContent(sector: string): Promise<{
         .replace(/\s*-\s*/g, '- ') // Normalize bullet points
         .replace(/\s*•\s*/g, '- ') // Convert bullet points
         .replace(/\s*→\s*/g, '- ') // Convert arrows
-<<<<<<< HEAD
-=======
-        .replace(/\s*→\s*/g, '- ') // Convert arrows
->>>>>>> d9d3e8fb9067f23cfe8d92d0dee4cf661f91b486
         .replace(/\s*\[.*?\]/g, '') // Remove markdown links
         .replace(/\s*\(.*?\)/g, '') // Remove markdown link text
         .replace(/\s*>\s*/g, '') // Remove blockquotes

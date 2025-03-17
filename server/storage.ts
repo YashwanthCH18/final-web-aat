@@ -48,8 +48,19 @@ export class FileStorage implements IStorage {
       const contacts = JSON.parse(contactsData);
       const blogs = JSON.parse(blogsData);
       
-      this.contacts = new Map(Object.entries(contacts));
-      this.blogs = new Map(Object.entries(blogs));
+      // Convert string keys to numbers for the maps with proper type assertions
+      this.contacts = new Map(
+        Object.entries(contacts).map(([key, value]) => [
+          parseInt(key),
+          value as Contact
+        ])
+      );
+      this.blogs = new Map(
+        Object.entries(blogs).map(([key, value]) => [
+          parseInt(key),
+          value as Blog
+        ])
+      );
       
       // Update IDs to be the maximum existing ID + 1
       this.contactId = Math.max(0, ...Array.from(this.contacts.keys())) + 1;
@@ -90,7 +101,8 @@ export class FileStorage implements IStorage {
     return newContact;
   }
 
-  private createBlog(blog: InsertBlog): Blog {
+  async createBlog(blog: InsertBlog): Promise<Blog> {
+    await this.loadData();
     const id = this.blogId++;
     const newBlog = {
       ...blog,
@@ -114,8 +126,37 @@ export class FileStorage implements IStorage {
     );
   }
 
-  async getBlog(id: number): Promise<Blog | undefined> {
-    return this.blogs.get(id);
+  async getBlog(id: number): Promise<Blog | null> {
+    await this.loadData();
+    return this.blogs.get(id) || null;
+  }
+
+  async updateBlog(id: number, blog: InsertBlog): Promise<Blog> {
+    await this.loadData();
+    const existingBlog = this.blogs.get(id);
+    if (!existingBlog) {
+      throw new Error(`Blog with id ${id} not found`);
+    }
+    
+    const updatedBlog = {
+      ...blog,
+      id,
+      createdAt: existingBlog.createdAt
+    };
+    
+    this.blogs.set(id, updatedBlog);
+    await this.saveData();
+    return updatedBlog;
+  }
+
+  async deleteBlog(id: number): Promise<void> {
+    await this.loadData();
+    if (!this.blogs.has(id)) {
+      throw new Error(`Blog with id ${id} not found`);
+    }
+    
+    this.blogs.delete(id);
+    await this.saveData();
   }
 }
 
