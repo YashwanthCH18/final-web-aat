@@ -7,7 +7,10 @@ export interface IStorage {
   // Blog operations
   getBlogs(): Promise<Blog[]>;
   getBlogsBySector(sector: string): Promise<Blog[]>;
-  getBlog(id: number): Promise<Blog | undefined>;
+  getBlog(id: number): Promise<Blog | null>;
+  createBlog(blog: InsertBlog): Promise<Blog>;
+  updateBlog(id: number, blog: InsertBlog): Promise<Blog>;
+  deleteBlog(id: number): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
@@ -430,7 +433,7 @@ export class MemStorage implements IStorage {
     return newContact;
   }
 
-  private createBlog(blog: InsertBlog): Blog {
+  async createBlog(blog: InsertBlog): Promise<Blog> {
     const id = this.blogId++;
     const newBlog = {
       ...blog,
@@ -451,8 +454,32 @@ export class MemStorage implements IStorage {
     );
   }
 
-  async getBlog(id: number): Promise<Blog | undefined> {
-    return this.blogs.get(id);
+  async getBlog(id: number): Promise<Blog | null> {
+    return this.blogs.get(id) || null;
+  }
+
+  async updateBlog(id: number, blog: InsertBlog): Promise<Blog> {
+    const existingBlog = this.blogs.get(id);
+    if (!existingBlog) {
+      throw new Error(`Blog with id ${id} not found`);
+    }
+    
+    const updatedBlog = {
+      ...blog,
+      id,
+      createdAt: existingBlog.createdAt
+    };
+    
+    this.blogs.set(id, updatedBlog);
+    return updatedBlog;
+  }
+
+  async deleteBlog(id: number): Promise<void> {
+    if (!this.blogs.has(id)) {
+      throw new Error(`Blog with id ${id} not found`);
+    }
+    
+    this.blogs.delete(id);
   }
 }
 
