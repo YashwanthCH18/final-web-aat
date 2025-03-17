@@ -63,7 +63,7 @@ export default function BlogPost() {
               >
                 <div className="flex items-center">
                   <Calendar className="w-4 h-4 mr-2" />
-                  {new Date(blog.createdAt).toLocaleDateString()}
+                  {blog.createdAt ? new Date(blog.createdAt).toLocaleDateString() : 'No date'}
                 </div>
                 <div className="flex items-center">
                   <User className="w-4 h-4 mr-2" />
@@ -77,11 +77,27 @@ export default function BlogPost() {
                 transition={{ duration: 0.6, delay: 0.4 }}
                 className="prose prose-lg max-w-none"
               >
-                {blog.content.split('\n').map((paragraph, index) => (
-                  <p key={index} className="mb-4">
-                    {paragraph}
-                  </p>
-                ))}
+                {blog.content.split('\n\n').map((section, sectionIndex) => {
+                  // Check if the section is a list (starts with - or numbers)
+                  if (section.trim().startsWith('-') || /^\d+\./.test(section.trim())) {
+                    return (
+                      <ul key={sectionIndex} className="list-disc pl-6 mb-4">
+                        {section.split('\n').map((item, itemIndex) => (
+                          <li key={itemIndex} className="mb-2">
+                            {item.replace(/^[-•→\s]+/, '').trim()}
+                          </li>
+                        ))}
+                      </ul>
+                    );
+                  }
+                  
+                  // Regular paragraph
+                  return (
+                    <p key={sectionIndex} className="mb-4">
+                      {section.trim()}
+                    </p>
+                  );
+                })}
               </motion.div>
             </CardContent>
           </Card>
