@@ -1,36 +1,7 @@
 import { Link, useLocation } from "wouter";
-import { cn } from "@/lib/utils";
-import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin, Github } from "lucide-react";
+import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 
 export default function Footer() {
-  const [location] = useLocation();
-  const isHomePage = location === "/";
-
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      // Adjust for the fixed navbar height
-      const yOffset = -70;
-      const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
-      window.scrollTo({ top: y, behavior: "smooth" });
-    }
-  };
-
-  interface NavItem {
-    id?: string;
-    href?: string;
-    label: string;
-    path?: string;
-  }
-
-  const navItems: NavItem[] = [
-    { id: "home", label: "Home", path: "/#home" },
-    { id: "about", label: "About Us", path: "/#about" },
-    { id: "pricing", label: "Pricing", path: "/#pricing" },
-    { href: "/blog", label: "Blog" },
-    { id: "contact", label: "Contact Us", path: "/#contact" }
-  ];
-
   return (
     <footer className="bg-gray-100 border-t mt-auto pt-10 pb-6">
       <div className="container mx-auto px-4">
@@ -81,42 +52,12 @@ export default function Footer() {
               </div>
             </div>
           </div>
-
-          {/* Main Navigation */}
-          <div className="flex flex-col md:items-end">
-            <h3 className="text-sm font-semibold text-gray-900 uppercase mb-4 md:text-right">Navigation</h3>
-            <ul className="space-y-2 md:text-right">
-              {navItems.map((item) => (
-                <li key={item.id || item.href}>
-                  {item.href ? (
-                    <Link href={item.href}>
-                      <span className="text-gray-600 hover:text-primary transition-colors text-sm cursor-pointer">
-                        {item.label}
-                      </span>
-                    </Link>
-                  ) : isHomePage ? (
-                    <span 
-                      onClick={() => scrollToSection(item.id!)}
-                      className="text-gray-600 hover:text-primary transition-colors text-sm cursor-pointer"
-                    >
-                      {item.label}
-                    </span>
-                  ) : (
-                    <Link href={item.path!}>
-                      <span className="text-gray-600 hover:text-primary transition-colors text-sm cursor-pointer">
-                        {item.label}
-                      </span>
-                    </Link>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
         
         {/* Copyright */}
         <div className="border-t border-gray-200 mt-4 pt-5 text-center text-gray-500 text-sm">
           <p>&copy; {new Date().getFullYear()} BlogGen AI. All rights reserved.</p>
+          <p>Website Created By Yashwanth C H, Sakshi Manoj Pawaskar, Yuska Maharjan, Sandrin</p>
         </div>
       </div>
     </footer>
